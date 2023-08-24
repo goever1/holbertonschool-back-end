@@ -11,7 +11,7 @@ if __name__ == "__main__":
                          sys.argv[1], timeout=5)
     
     json_todo = to_do.json()
-    json_names = name.jason()
+    json_names = name.json()
 
     all_tasks = 0
     tasks_completed = 0
