@@ -5,6 +5,10 @@ import requests
 import sys
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: {} <user_id>".format(sys.argv[0]))
+        sys.exit(1)
+        
     to_do: requests.get('https://jsonplaceholder.typicode.com/todos?userId=' +
                          sys.argv[1], timeout=5)
     name = requests.get('https://jsonplaceholder.typicode.com/users/' +
@@ -14,17 +18,15 @@ if __name__ == "__main__":
     json_names = name.json()
 
     all_tasks = 0
-    tasks_completed = 0
+    comp_task = 0
+    title = ""
 
-    titles_completed=[]
-    for task in json_todo:
+    for item in json_todo:
         all_tasks += 1
-        if task["completed"] is True:
-            tasks_completed += 1
-            titles_completed.append(task["title"])
+        if item ['completed'] is True:
+            comp_task += 1
+            comp_task.appened(item['title'])
 
-    print('L\'employé {} a terminé ({}/{}) de ses tâches :'
-          .format(json_names['name'], tasks_completed, all_tasks))
-    
-    for title_task in titles_completed:
-        print('\t {}'.format(title_task))
+    print("Employee {} is done with tasks({}/20):\n{}".format(name['name'],
+                                                              comp_task, title),
+          end='')
