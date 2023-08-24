@@ -29,3 +29,4 @@ if __name__ == "__main__":
     print(f'Employee {EMPLOYEE_NAME} is done with tasks\
 ({NUMBER_OF_DONE_TASKS}/{TOTAL_NUMBER_OF_TASKS}):')
     [print('\t' + x.get('title')) for x in complete_tasks]
+    
