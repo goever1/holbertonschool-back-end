@@ -1,33 +1,30 @@
 #!/usr/bin/python3
-"""Export data in CSV format"""
-import csv
+"""import"""
+import json
 import requests
 import sys
 
-
 if __name__ == "__main__":
-    """using REST API Placeholder through parameter"""
-    parametro_id = sys.argv[1]
+    if len(sys.argv) < 2:
+        print(f"missing employee id as argument")
+        sys.exit(1)
 
-    url = f"https://jsonplaceholder.typicode.com/todos?userId={parametro_id}"
-    url_nombre = f"https://jsonplaceholder.typicode.com/users/{parametro_id}"
+    URL = "https://jsonplaceholder.typicode.com"
+    EMPLOYEE_ID = sys.argv[1]
 
-    respuesta = requests.get(url)
-    respuesta_nombre = requests.get(url_nombre)
+    EMPLOYEE_TODOS = requests.get(f"{URL}/users/{EMPLOYEE_ID}/todos",
+                                  params={"_expand": "user"})
+    data = EMPLOYEE_TODOS.json()
 
-    total_tarea = respuesta.json()
-    informacion_empleado = respuesta_nombre.json()
-
-    formato_archivo = parametro_id + ".csv"
-    with open(formato_archivo, mode='w', newline="") as file:
-        contenedor = []
-        for tarea in total_tarea:
-            formato = [
-                "{}".format(parametro_id),
-                "{}".format(informacion_empleado.get("username")),
-                "{}".format(tarea.get("completed")),
-                "{}".format(tarea.get("title"))
-            ]
-            contenedor.append(formato)
-        escritor_csv = csv.writer(file, quoting=csv.QUOTE_ALL)
-        escritor_csv.writerows(contenedor)
+    EMPLOYEE_NAME = data[0]["user"]["name"]
+    TOTAL_NUMBER_OF_TASKS = len(data)
+    NUMBER_OF_DONE_TASKS = 0
+    TASK_TITLE = []
+    for task in data:
+        if task["completed"]:
+            NUMBER_OF_DONE_TASKS += 1
+            TASK_TITLE.append(task["title"])
+    print(f"Employee {EMPLOYEE_NAME} is done with tasks"
+          f"({NUMBER_OF_DONE_TASKS}/{TOTAL_NUMBER_OF_TASKS}):")
+    for title in TASK_TITLE:
+        print("\t ", title)
