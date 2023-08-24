@@ -1,25 +1,34 @@
 #!/usr/bin/python3
-"""
-Python script that, using this REST API, for a given employee ID,
-returns information about his/her TODO list progress.
-"""
+"""using REST API to identify a given employee"""
+
 import requests
 import sys
-from sys import argv
 
 
 if __name__ == "__main__":
-    BASE_URL = 'https://jsonplaceholder.typicode.com'
-    employe = int(sys.argv[1])
-    response = requests.get(f'{BASE_URL}/todos?userId={employe}')
-    todos = response.json()
-    tasks_completed = [todo for todo in todos if todo['completed']]
-    num_tasks_completed = len(tasks_completed)
-    num_tasks = len(todos)
-    user_response = requests.get(f'{BASE_URL}/users/{employe}')
-    user_data = user_response.json()
-    empoleye_name = user_data['name']
-    print(f"Employee {empoleye_name} is donde with tasks \
-           ({num_tasks_completed}/{num_tasks}): ")
-    for todo in tasks_completed:
-        print(f'\t {todo["title"]}')
+    """using REST API Placeholder through parameter"""
+    parametro_id = sys.argv[1]
+
+    url = f"https://jsonplaceholder.typicode.com/todos?userId={parametro_id}"
+    url_nombre = f"https://jsonplaceholder.typicode.com/users/{parametro_id}"
+
+    respuesta = requests.get(url)
+    respuesta_nombre = requests.get(url_nombre)
+
+    total_tarea = respuesta.json()
+    informacion_empleado = respuesta_nombre.json()
+    nombre_empleado = informacion_empleado.get("name")
+
+    tarea_completadas = []
+    for tarea in total_tarea:
+        if tarea["completed"]:
+            tarea_completadas.append(tarea)
+    cantidad_tarea_completada = len(tarea_completadas)
+    cantidad_total_tarea = len(total_tarea)
+
+    print(f"Employee {nombre_empleado} is done \
+with tasks({cantidad_tarea_completada}/{cantidad_total_tarea}):")
+
+    for tarea in tarea_completadas:
+        print(f"\t {tarea.get('title')}")
+        
